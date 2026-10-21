@@ -257,11 +257,13 @@ type AddInput struct {
 // IDPattern matches Taskwarrior task references: numeric short ID or full UUID.
 var IDPattern = regexp.MustCompile(`^[0-9]+$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$`)
 
-// ProjectPattern matches valid project names: letters, digits, dots, underscores.
-var ProjectPattern = regexp.MustCompile(`^[a-zA-Z0-9._]+$`)
+// ProjectPattern matches valid project names: Unicode letters, numbers, dots,
+// underscores.
+var ProjectPattern = regexp.MustCompile(`^[\p{L}\p{N}._]+$`)
 
-// TagPattern matches valid tag names: letters, digits, dashes, underscores.
-var TagPattern = regexp.MustCompile(`^[a-zA-Z0-9_-]+$`)
+// TagPattern matches valid tag names: Unicode letters, numbers, dashes,
+// underscores.
+var TagPattern = regexp.MustCompile(`^[\p{L}\p{N}_-]+$`)
 
 // datePattern is the shape filter for date inputs. It accepts ISO dates
 // ("2026-05-09", "2026-05-09T14:00"), keywords ("tomorrow", "eom"),

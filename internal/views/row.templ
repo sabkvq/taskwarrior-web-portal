@@ -183,7 +183,7 @@ templ rowDetailGrid(t tw.Task) {
 		if t.Project != "" {
 			@detailRow("Project", "") {
 				<a
-					href={ templ.SafeURL("/project/" + t.Project) }
+					href={ projectURL(t.Project) }
 					class="text-blue-700 hover:underline dark:text-blue-400"
 					title={ "Browse project " + t.Project }
 				>{ t.Project }</a>
@@ -266,7 +266,7 @@ templ rowDetailGrid(t tw.Task) {
 						{ ", " }
 					}
 					<a
-						href={ templ.SafeURL("/tag/" + tag) }
+						href={ tagURL(tag) }
 						class="text-blue-700 hover:underline dark:text-blue-400"
 						title={ "Browse tag +" + tag }
 					>{ tag }</a>

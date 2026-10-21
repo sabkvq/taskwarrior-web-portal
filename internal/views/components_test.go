@@ -1,6 +1,7 @@
 package views
 
 import (
+	"net/url"
 	"strings"
 	"testing"
 	"time"
@@ -407,6 +408,9 @@ func TestPartialURL(t *testing.T) {
 	if got := partialURL("next", "p"); got != "/partials/list?project=p" {
 		t.Errorf("both: got %q", got)
 	}
+	if got := partialURL("", "проект.alpha_1"); got != "/partials/list?project=%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82.alpha_1" {
+		t.Errorf("unicode project: got %q", got)
+	}
 }
 
 func TestPartialURLWithSort(t *testing.T) {
@@ -465,6 +469,51 @@ func TestSortURL_PrefersProjectOverReport(t *testing.T) {
 	}
 	if strings.Contains(got, "report=") {
 		t.Errorf("did not expect report param when project set: got %q", got)
+	}
+}
+
+func TestProjectAndTagURLs_EscapePathSegments(t *testing.T) {
+	if got := string(projectURL("日本語.alpha_1")); got != "/project/%E6%97%A5%E6%9C%AC%E8%AA%9E.alpha_1" {
+		t.Errorf("projectURL: got %q", got)
+	}
+	if got := projectRenameFormURL("日本語.alpha_1"); got != "/forms/project/%E6%97%A5%E6%9C%AC%E8%AA%9E.alpha_1/rename" {
+		t.Errorf("projectRenameFormURL: got %q", got)
+	}
+	if got := projectRenameURL("日本語.alpha_1"); got != "/projects/%E6%97%A5%E6%9C%AC%E8%AA%9E.alpha_1/rename" {
+		t.Errorf("projectRenameURL: got %q", got)
+	}
+	if got := string(tagURL("priorité-haute_1")); got != "/tag/priorit%C3%A9-haute_1" {
+		t.Errorf("tagURL: got %q", got)
+	}
+	if got := tagRenameFormURL("priorité-haute_1"); got != "/forms/tag/priorit%C3%A9-haute_1/rename" {
+		t.Errorf("tagRenameFormURL: got %q", got)
+	}
+	if got := tagMergeFormURL("priorité-haute_1"); got != "/forms/tag/priorit%C3%A9-haute_1/merge" {
+		t.Errorf("tagMergeFormURL: got %q", got)
+	}
+	if got := tagRenameURL("priorité-haute_1"); got != "/tags/priorit%C3%A9-haute_1/rename" {
+		t.Errorf("tagRenameURL: got %q", got)
+	}
+	if got := tagMergeURL("priorité-haute_1"); got != "/tags/priorit%C3%A9-haute_1/merge" {
+		t.Errorf("tagMergeURL: got %q", got)
+	}
+}
+
+func TestPartialURLWithSort_EncodesUnicodeProjectAndFilter(t *testing.T) {
+	got := partialURLWithSort("", "日本語.alpha_1", SortSpec{Key: "project", Asc: true}, "tag:priorité-haute")
+	u, err := url.Parse(got)
+	if err != nil {
+		t.Fatalf("parse url: %v", err)
+	}
+	q := u.Query()
+	if q.Get("project") != "日本語.alpha_1" {
+		t.Fatalf("project query mismatch: %q", q.Get("project"))
+	}
+	if q.Get("sort") != "project:asc" {
+		t.Fatalf("sort query mismatch: %q", q.Get("sort"))
+	}
+	if q.Get("filter") != "tag:priorité-haute" {
+		t.Fatalf("filter query mismatch: %q", q.Get("filter"))
 	}
 }
 
