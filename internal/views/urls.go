@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/a-h/templ"
 	"github.com/furan917/taskwarrior-web-portal/internal/tw"
 )
 
@@ -104,6 +105,38 @@ func taskStartURL(t tw.Task) string     { return taskURL(t) + "/start" }
 func taskStopURL(t tw.Task) string      { return taskURL(t) + "/stop" }
 func taskDuplicateURL(t tw.Task) string { return taskURL(t) + "/duplicate" }
 
+func projectURL(name string) templ.SafeURL {
+	return templ.SafeURL("/project/" + url.PathEscape(name))
+}
+
+func projectRenameFormURL(name string) string {
+	return "/forms/project/" + url.PathEscape(name) + "/rename"
+}
+
+func projectRenameURL(name string) string {
+	return "/projects/" + url.PathEscape(name) + "/rename"
+}
+
+func tagURL(name string) templ.SafeURL {
+	return templ.SafeURL("/tag/" + url.PathEscape(name))
+}
+
+func tagRenameFormURL(name string) string {
+	return "/forms/tag/" + url.PathEscape(name) + "/rename"
+}
+
+func tagMergeFormURL(name string) string {
+	return "/forms/tag/" + url.PathEscape(name) + "/merge"
+}
+
+func tagRenameURL(name string) string {
+	return "/tags/" + url.PathEscape(name) + "/rename"
+}
+
+func tagMergeURL(name string) string {
+	return "/tags/" + url.PathEscape(name) + "/merge"
+}
+
 // contextSetURL is the POST endpoint the context dropdown / clear-x targets.
 // One named constant beats sprinkling the literal "/context" through five
 // templ files.
@@ -129,10 +162,13 @@ func denotateVals(description string) string {
 }
 
 func partialURL(report, project string) string {
+	q := url.Values{}
 	if project != "" {
-		return "/partials/list?project=" + project
+		q.Set("project", project)
+	} else {
+		q.Set("report", report)
 	}
-	return "/partials/list?report=" + report
+	return "/partials/list?" + q.Encode()
 }
 
 // partialURLWithSort builds the polling URL including the current sort and

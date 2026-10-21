@@ -53,11 +53,18 @@ func TestAddArgs_Project(t *testing.T) {
 		{"hiring.devops", true},
 		{"team.beta", true},
 		{"team", true},
+		{"café", true},
+		{"日本語", true},
+		{"проект.alpha", true},
+		{"客户_重要", true},
 		{"../etc/passwd", false},
+		{"日本語/秘密", false},
 		{"+team", false},
 		{"-team", false},
 		{"team alpha", false},
 		{"team;ls", false},
+		{"team+alpha", false},
+		{"team\"alpha", false},
 		{"team\nfoo", false},
 	}
 	for _, c := range cases {
@@ -79,9 +86,16 @@ func TestAddArgs_Tags(t *testing.T) {
 		{"offboarding", true},
 		{"in-flight", true},
 		{"hiring_devops", true},
+		{"café", true},
+		{"日本語", true},
+		{"priorité-haute", true},
+		{"客户_重要", true},
 		{"+team", false}, // we add the + ourselves
 		{"team alpha", false},
 		{"../bad", false},
+		{"日本語/秘密", false},
+		{"tag;drop", false},
+		{"tag+plus", false},
 		{"", false},
 	}
 	for _, c := range cases {
@@ -141,6 +155,28 @@ func TestModifyArgs_NonEmptyValuesWrap(t *testing.T) {
 	for _, unwanted := range []string{"due:", "wait:", "scheduled:", "project:"} {
 		if slices.Contains(args, unwanted) {
 			t.Errorf("unexpected bare clear arg %q in %v", unwanted, args)
+		}
+	}
+}
+
+func TestModifyArgs_UnicodeProjectAndTags(t *testing.T) {
+	args, err := AddInput{
+		Description: "unicode test",
+		Project:     "проект.alpha",
+		Tags:        []string{"日本語", "priorité-haute", "客户_重要"},
+	}.ModifyArgs()
+	if err != nil {
+		t.Fatalf("unexpected err: %v", err)
+	}
+	for _, want := range []string{
+		`description:"unicode test"`,
+		`project:"проект.alpha"`,
+		`+日本語`,
+		`+priorité-haute`,
+		`+客户_重要`,
+	} {
+		if !slices.Contains(args, want) {
+			t.Errorf("missing %q in %v", want, args)
 		}
 	}
 }

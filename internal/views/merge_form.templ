@@ -4,7 +4,7 @@ templ MergeTagFormModal(csrf, fromTag string, allTags []string) {
 	@modalShell("task-modal") {
 		@modalHeader("Merge tag")
 		<form
-			hx-post={ "/tags/" + fromTag + "/merge" }
+			hx-post={ tagMergeURL(fromTag) }
 			hx-target-error="#merge-form-errors"
 			hx-swap="none"
 		>

@@ -570,7 +570,7 @@ func TestClient_ListProjects_FakeBinary(t *testing.T) {
 	body := `#!/bin/sh
 case "$*" in
   *"_projects"*)
-    printf 'team.alpha\nshop\n\nteam.alpha\n+evil\nbad space\n../etc\nadmin_tools\n'
+    printf 'team.alpha\nshop\n\nteam.alpha\n+evil\nbad space\n../etc\nadmin_tools\ncafé\n日本語\nпроект.alpha\n客户_重要\nteam+alpha\nteam/alpha\n'
     ;;
   *)
     printf ''
@@ -584,7 +584,7 @@ exit 0
 	if err != nil {
 		t.Fatalf("ListProjects: %v", err)
 	}
-	want := []string{"admin_tools", "shop", "team.alpha"}
+	want := []string{"admin_tools", "café", "shop", "team.alpha", "проект.alpha", "客户_重要", "日本語"}
 	if len(got) != len(want) {
 		t.Fatalf("got %v, want %v", got, want)
 	}
@@ -604,7 +604,7 @@ func TestClient_ListTags_FakeBinary(t *testing.T) {
 	body := `#!/bin/sh
 case "$*" in
   *"_tags"*)
-    printf 'urgent\noffboarding\nurgent\n\n+evil\nin-progress\nbad space\nteam_a\nACTIVE\nBLOCKED\nOVERDUE\nREADY\nTAGGED\n'
+    printf 'urgent\noffboarding\nurgent\n\n+evil\nin-progress\nbad space\nteam_a\nACTIVE\nBLOCKED\nOVERDUE\nREADY\nTAGGED\ncafé\n日本語\npriorité-haute\n客户_重要\ntag+plus\ntag/blocked\n'
     ;;
   *)
     printf ''
@@ -618,7 +618,7 @@ exit 0
 	if err != nil {
 		t.Fatalf("ListTags: %v", err)
 	}
-	want := []string{"in-progress", "offboarding", "team_a", "urgent"}
+	want := []string{"café", "in-progress", "offboarding", "priorité-haute", "team_a", "urgent", "客户_重要", "日本語"}
 	if len(got) != len(want) {
 		t.Fatalf("got %v, want %v", got, want)
 	}

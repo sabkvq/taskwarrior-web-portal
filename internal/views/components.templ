@@ -143,7 +143,7 @@ templ navArrow(href, label, ariaLabel string) {
 // element from <span> to <a>.
 templ Tag(name string) {
 	<a
-		href={ templ.SafeURL("/tag/" + name) }
+		href={ tagURL(name) }
 		class="inline-flex items-center rounded bg-zinc-200 px-2 py-0.5 text-xs font-medium text-zinc-700 hover:bg-zinc-300 hover:text-zinc-900 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:bg-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-600 dark:hover:text-zinc-50"
 		title={ "Browse tag +" + name }
 	>+{ name }</a>
@@ -152,7 +152,7 @@ templ Tag(name string) {
 templ Project(name string) {
 	if name != "" {
 		<a
-			href={ templ.SafeURL("/project/" + name) }
+			href={ projectURL(name) }
 			class="inline-flex items-center rounded bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 hover:bg-blue-200 hover:text-blue-900 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:bg-blue-950/60 dark:text-blue-200 dark:hover:bg-blue-900/60 dark:hover:text-blue-100"
 			title={ "Browse project " + name }
 		>{ name }</a>

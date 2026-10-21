@@ -1248,8 +1248,8 @@ func IsInvalidFilter(err error) bool {
 // pattern is dropped silently as defence-in-depth against a hostile sqlite
 // state smuggling parser tokens through the cache.
 
-var projectListPattern = regexp.MustCompile(`^[a-zA-Z0-9._]+$`)
-var tagListPattern = regexp.MustCompile(`^[a-zA-Z0-9_-]+$`)
+var projectListPattern = regexp.MustCompile(`^[\p{L}\p{N}._]+$`)
+var tagListPattern = regexp.MustCompile(`^[\p{L}\p{N}_-]+$`)
 
 // ReportNamePattern is the allowlist for Taskwarrior report names. Used
 // both internally as the discovery filter and by the views layer to
